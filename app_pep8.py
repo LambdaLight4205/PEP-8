@@ -163,7 +163,6 @@ class Window(QWidget):
             self.current_index = i
 
             line_no_spaces = line.strip(" ")
-            print(line_no_spaces)
             if line_no_spaces == r"'''" or line_no_spaces == r'"""':
                 active = not active
 
