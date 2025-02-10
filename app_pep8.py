@@ -138,10 +138,15 @@ class Window(QWidget):
             if "#" in line:
                 return True
             
+            active = True
             for i, char in enumerate(line):
-                if char == ":" and line[i - 1] == " ":
-                    return False
-                
+                if char == r"'" or char == r'"':
+                    active = not active
+
+                if active:
+                    if char == ":" and line[i - 1] == " ":
+                        return False
+                    
             return True
 
         def check_hashtag(line):
@@ -153,30 +158,37 @@ class Window(QWidget):
 
         self.get_lines()
         self.errors_nb = 0
+        active = True
         for i, line in enumerate(self.list_lines):
             self.current_index = i
+
+            line_no_spaces = line.strip(" ")
+            print(line_no_spaces)
+            if line_no_spaces == r"'''" or line_no_spaces == r'"""':
+                active = not active
 
             if not check_length(line):
                 print(f"La ligne {i + 1} est trop longue : {line}")
                 self.errors_nb += 1
 
-            hash_pos = check_hashtag(line)
-            if hash_pos:
-                self.current_line = line[:hash_pos]
-            else:
-                self.current_line = line
+            if active:
+                hash_pos = check_hashtag(line)
+                if hash_pos:
+                    self.current_line = line[:hash_pos]
+                else:
+                    self.current_line = line
 
-            if not check_commas(self.current_line):
-                print(f"Attention à la virgule ligne {i + 1} : {self.current_line}")
-                self.errors_nb += 1
+                if not check_commas(self.current_line):
+                    print(f"Attention à la virgule ligne {i + 1} : {self.current_line}")
+                    self.errors_nb += 1
 
-            elif not check_parenthesis(self.current_line):
-                print(f"Attention aux parenthèse ligne {i + 1} : {self.current_line}")
-                self.errors_nb += 1
+                elif not check_parenthesis(self.current_line):
+                    print(f"Attention aux parenthèse ligne {i + 1} : {self.current_line}")
+                    self.errors_nb += 1
 
-            elif not check_points(self.current_line):
-                print(f"Attention aux deux-points ligne {i + 1} : {self.current_line}")
-                self.errors_nb += 1
+                elif not check_points(self.current_line):
+                    print(f"Attention aux deux-points ligne {i + 1} : {self.current_line}")
+                    self.errors_nb += 1
 
         print(f"Tu as fait {self.errors_nb} erreur{"s" if self.errors_nb > 1 else ""} en {len(self.list_lines)} lignes")
 
