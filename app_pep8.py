@@ -113,7 +113,7 @@ class Window(QWidget):
                     if line[i - 1] == " ":
                         return False
                     
-                    elif line[i + 1] != " " and line[i + 1] != ")" and line[i + 1] != "\n":
+                    elif line[i + 1] not in [" ", ")", "\n", "'", '"']:
                         return False
             
             return True
